@@ -1,0 +1,158 @@
+<template>
+    <view class="page page-note">
+        <nav-bar isBack="{{true}}" navBarTitle="{{title}}" custom="{{titleCustom}}"></nav-bar>
+        <view class="letter-wrap">
+            <view class="content">
+                <textarea wx:if="{{!baseData.date}}" placeholder="请写..." maxlength="-1" wx:model="{{form.textContent}}" />
+                <text wx:if="{{baseData.date}}">{{form.textContent}}</text>
+                <image class="ico-uhi" src="../assets/image/ico-uhi.png" mode="widthFix"></image>
+                <!-- <image class="ico-tag" src="../assets/image/ico-tag.png" mode="widthFix"></image> -->
+            </view>
+            <view class="author">
+                <view class="location" bindtap="getLocaton" wx:if="{{!baseData.date}}">
+                    <van-icon name="location" />
+                    {{form.address ? (form.address + '，' + form.weather) : '点击获取位置和天气'}}
+                </view>
+                <view wx:if="{{baseData.date}}">{{form.address ? (form.address + '，' + form.weather) : ''}}</view>
+                <view>
+                    <view>{{baseData.nickName || ''}}</view>
+                    <view class="font-number">{{baseData.nowDate || ''}}</view>
+                </view>
+            </view>
+            <view class="images">
+                <van-uploader
+                    file-list="{{ form.fileList }}"
+                    max-count="4"
+                    multiple
+                    preview-size="132rpx"
+                    image-fit="aspectFill"
+                    bind:after-read="afterRead"
+                    bind:delete="deleteFile"
+                    disabled="{{baseData.date}}"
+                    show-upload="{{!baseData.date}}"
+                    deletable="{{!baseData.date}}"
+                />
+            </view>
+        </view>
+        <view class="btns">
+            <!-- <van-button type="danger">删除</van-button> -->
+            <van-button wx:if="{{baseData.creator && baseData.date }}" color="linear-gradient(to right, #cad435, #9ea71f)" round bindtap="edit">编辑</van-button>
+            <van-button wx:if="{{!baseData.date}}" color="linear-gradient(to right, #cad435, #9ea71f)" round bindtap="save">保存</van-button>
+        </view>
+        <van-toast id="van-toast" />
+        <van-dialog id="van-dialog" />
+    </view>
+</template>
+
+<script>
+    const $this = getApp()
+    import { createPage } from '@mpxjs/core'
+    import scope from '../utils/scope'
+    import md5 from 'md5'
+    createPage({
+        data: {
+            title: '',
+            titleCustom: false,
+            baseData: {},
+            form: {
+                address: '',
+                weather: '',
+                fileList: [],
+                textContent: ''
+            }
+        },
+
+        onLoad() {
+            this.init()
+        },
+
+        methods: {
+            init() {
+                $this.loading.open()
+                $this.http.call('noteInit').then(res => {
+                    $this.loading.close()
+                    this.baseData = res.data
+                    this.title = res.data.nowDate
+                    Object.keys(this.form).forEach(key => {
+                        this.form[key] = res.data[key]
+                    })
+                    this.form.fileList = this.form.fileList || []
+                    let _list = []
+                    this.form.fileList.forEach(item => {
+                        _list.push({
+                            fileID: item,
+                            url: item
+                        })
+                    })
+                    this.form.fileList = _list || []
+                })
+            },
+            save() {
+                let { textContent, fileList, address, weather } = this.form
+                fileList = fileList.map(item => item.fileID)
+                $this.loading.open()
+                let data = {
+                    textContent,
+                    fileList,
+                    address,
+                    weather
+                }
+                if (this.baseData._id) data._id = this.baseData._id
+                $this.http.call('noteSave', data).then(res => {
+                    $this.loading.close()
+                    $this.toast('成功！')
+                    setTimeout(() => {
+                        this.init()
+                    }, 2000)
+                })
+            },
+            edit() {
+                this.baseData.date = null
+            },
+            afterRead(e) {
+                e.detail.file.forEach((item, ind) => {
+                    $this.http.upload(`note_images/${md5(item.path)}${item.path.match(/\.[^.]+?$/)[0]}`, item.path).then(fileID => {
+                        this.form.fileList.push({
+                            url: item.path, fileID
+                        })
+                    })
+                })
+            },
+            deleteFile(e) {
+                const fileID = [e.detail.file.fileID]
+                this.form.fileList.splice(e.detail.index, 1)
+                $this.http.delete(fileID)
+            },
+            getLocaton() {
+                let _this = this
+                scope('scope.userLocation').then(() => {
+                    wx.chooseLocation({
+                        success(res) {
+                            // 获取位置和天气
+                            _this.form.address = res.name
+                            $this.loading.open()
+                            wx.request({
+                                url: `https://free-api.heweather.net/s6/weather/now?location=${res.latitude},${res.longitude}&key=829a6220f5b04bb9a3ff45cbb2eaeb46`,
+                                success(res) {
+                                    $this.loading.close()
+                                    _this.form.weather = res.data.HeWeather6[0] && res.data.HeWeather6[0].now.cond_txt || ''
+                                }
+                            })
+                        }
+                    })
+                }).catch(() => {
+                    $this.dialog.alert('温馨提示', '请点击小程序右上角更多设置并打开位置信息')
+                })
+            }
+        }
+    })
+// "enablePullDownRefresh": true
+</script>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+        "van-uploader": "@vant/weapp/dist/uploader/index"
+    }
+  }
+</script>

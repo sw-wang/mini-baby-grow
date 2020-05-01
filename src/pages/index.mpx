@@ -1,0 +1,146 @@
+<template>
+    <view class="page page-index">
+        <login bindloginSuccess="loginSuccess" />
+        <nav-bar isBack="{{false}}" navBarTitle="{{sysTitle}}" custom="{{titleCustom}}"></nav-bar>
+        <view class="index-top">
+            <view class="baby-manage-wrap">
+                <view class="manage-item">
+                    <view class="t1">身高</view>
+                    <view class="t2"><text class="font-number">72</text>cm</view>
+                </view>
+                <view class="manage-item">
+                    <view class="t1">体重</view>
+                    <view class="t2"><text class="font-number">18.8</text>kg</view>
+                </view>
+                <view class="manage-item">
+                    <view class="t1">里程碑</view>
+                    <view class="t2"><text class="font-number">3</text>个</view>
+                </view>
+                <view class="manage-item">
+                    <view class="t1">日记</view>
+                    <view class="t2"><text class="font-number">103</text>篇</view>
+                </view>
+            </view>
+            <image class="icon-tree" src="../assets/image/tree.png" mode="widthFix"></image>
+        </view>
+        <view class="index-container">
+            <view class="title" bindtap="baby">
+                <view class="font-content">
+                    {{child.name ? child.name : sysTitle}}
+                    <text class="font-number">{{child.days ? child.days : '点击添加宝宝'}}</text>
+                </view>
+                <view class="baby-head">
+                    <image src="{{child.headUrl ? child.headUrl : defaultHeadUrl}}" />
+                </view>
+            </view>
+            <view class="dateline">
+                <view class="date">2019年04月</view>
+                <view class="content">
+                    <view class="head">
+                        <image
+                            src="https://dss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3256100974,305075936&fm=26&gp=0.jpg"
+                            mode="widthFix"></image>
+                    </view>
+                    <view class="wrap">
+                        <view class="active-item">
+                            <view class="ti">9号</view>
+                            <view class="thumb">
+                                <view class="text">
+                                    最近在写微信小程序的一个项目，但是发现字体用的不是手机系统默认的字体最近在写微信小程序的一个项目，但是发现字体用的不是手机系统默认的字体,这样对用户很不友好,通过下面这行样式就可以将页面的字体搞成系统默认字体了
+                                </view>
+                            </view>
+                            <view class="author">03点24分</view>
+                        </view>
+                        <view class="active-item">
+                            <view class="ti">10号</view>
+                            <view class="thumb">
+                                <view class="text">
+                                    最近在写微信小程序的一个项目，但是发现字体用的不是手机系统默认的字体最近在写微信小程序的一个项目，但是发现字体用的不是手机系统默认的字体,这样对用户很不友好,通过下面这行样式就可以将页面的字体搞成系统默认字体了
+                                </view>
+                            </view>
+                            <view class="author">03点24分</view>
+                        </view>
+                        <view class="active-item">
+                            <view class="ti">11号</view>
+                            <view class="thumb">
+                                <view class="text">
+                                    最近在写微信小程序的一个项目，但是发现字体用的不是手机系统默认的字体最近在写微信小程序的一个项目，但是发现字体用的不是手机系统默认的字体,这样对用户很不友好,通过下面这行样式就可以将页面的字体搞成系统默认字体了
+                                </view>
+                            </view>
+                            <view class="author">03点24分</view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="btn-add" bindtap="add">
+            <van-icon name="plus" />
+        </view>
+        <van-toast id="van-toast" />
+        <van-dialog id="van-dialog" />
+    </view>
+</template>
+
+<script>
+    const $this = getApp()
+    import { createPage } from '@mpxjs/core'
+    import Notify from '@vant/weapp/dist/notify/notify'
+    import { sysTitle, defaultHeadUrl } from '../constant'
+    createPage({
+        data() {
+            return {
+                sysTitle, defaultHeadUrl,
+                titleCustom: false,
+                child: {}
+            }
+        },
+
+        onLoad() {
+            // Notify({ type: 'danger', message: '通知内容' });
+            this.init()
+
+        },
+
+        onPageScroll(e) {
+            this.titleCustom = e.scrollTop > 80
+        },
+
+        methods: {
+            init() {
+                $this.loading.open()
+                $this.http.call('childInfo').then(res => {
+                    $this.loading.close()
+                    this.child = res.data[0]
+                })
+                $this.http.call('noteList').then(res => {
+                    $this.loading.close()
+                    // this.child = res.data[0]
+                })
+            },
+            baby(){
+                wx.navigateTo({url: 'child'})
+            },
+            showToast() {
+                // $this.toast('哈哈哈').then(res => { console.log(res) })
+                $this.dialog.confirm('标题', '你好啊')
+            },
+            onClickLeft() { },
+            onClickRight() { },
+            loginSuccess() {
+            },
+            add() {
+                wx.navigateTo({ url: 'note' })
+            }
+        }
+    })
+// "enablePullDownRefresh": true
+</script>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+      "van-notify": "@vant/weapp/dist/notify/index",
+      "login": "../components/login"
+    }
+  }
+</script>

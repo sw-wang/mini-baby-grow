@@ -1,0 +1,425 @@
+@import "./fix.scss";
+@import "./base.scss";
+@import "./mixins.scss";
+@import "./icon.scss";
+@import "./font-wx-sans-std.scss";
+@mixin color($opicity: 1) {
+    color: rgba(17, 66, 44, $opicity);
+}
+$main-color: #813edd;
+$linear-gradient: linear-gradient(280deg, #813edd, #a867ea);
+page {
+    height: 100%;
+    background-color: #fef6fd;
+    font-family: Monospaced Number, Chinese Quote, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC,
+        Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+.page {
+    padding-top: 64px;
+}
+
+.page-index {
+    padding-top: 0;
+    .index-top {
+        height: 460rpx;
+        background: $linear-gradient;
+        position: relative;
+        overflow: hidden;
+        .icon-tree {
+            position: absolute;
+            right: 5%;
+            bottom: -30rpx;
+            width: 35%;
+            height: auto;
+            animation: twinkling 3s infinite ease-in-out;
+        }
+        .baby-manage-wrap {
+            position: absolute;
+            left: 10%;
+            bottom: 10%;
+            width: 50%;
+            color: #fff;
+
+            .manage-item {
+                width: 50%;
+                float: left;
+                margin-top: 50rpx;
+                .t1 {
+                    font-size: 20rpx;
+                    margin-bottom: 0rpx;
+                    color: rgba(255, 255, 255, 0.7);
+                }
+                .t2 {
+                    font-size: 20rpx;
+                    color: rgba(255, 255, 255, 0.7);
+                    text {
+                        font-size: 54rpx;
+                        color: #fff;
+                        text-shadow: 2rpx 2rpx 4rpx #813edd;
+                        margin-right: 10rpx;
+                    }
+                }
+            }
+        }
+    }
+    .index-container {
+        padding: 30rpx 8% 220rpx 8%;
+        .title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            padding-bottom: 20rpx;
+            @include mini-border(bottom, #dfdfdf);
+            view.font-content {
+                display: flex;
+                flex-direction: column;
+                font-size: 42rpx;
+                color: #111;
+                font-weight: bold;
+                text {
+                    font-size: 28rpx;
+                    font-weight: 400;
+                    color: #333;
+                    margin-left: 5rpx;
+                }
+            }
+            .icon-cap {
+                width: 40rpx;
+                position: absolute;
+                right: 0;
+                top: 0;
+                transform: rotate(50deg);
+            }
+            .baby-head {
+                width: 140rpx;
+                height: 140rpx;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #fbfffe;
+                image {
+                    border-radius: 50%;
+                    height: 110rpx;
+                    width: 110rpx;
+                }
+            }
+        }
+        .dateline {
+            .date {
+                margin: 30rpx 0 10rpx 0;
+                color: #333;
+                font-size: 30rpx;
+                @extend .font-number;
+            }
+            .content {
+                position: relative;
+                padding-left: 12%;
+                display: flex;
+                @include mini-border(bottom, #dfdfdf);
+                padding-top: 20rpx;
+                padding-bottom: 20rpx;
+                .wrap {
+                    display: flex;
+                    overflow-x: auto;
+                }
+                .active-item {
+                    width: 220rpx;
+                    margin-left: 30rpx;
+                    text-align: center;
+                    @extend .font-number;
+                }
+                .head {
+                    position: absolute;
+                    width: 12%;
+                    left: 0;
+                    top: 28rpx;
+                    text-align: center;
+                    font-size: 24rpx;
+                    image {
+                        width: 100%;
+                        border-radius: 30rpx;
+                    }
+                }
+            }
+            .ti {
+                font-size: 32rpx;
+            }
+            .author {
+                @extend .font-number;
+                color: #999;
+                font-size: 20rpx;
+                margin-top: 10rpx;
+            }
+            .thumb {
+                width: 220rpx;
+                height: 300rpx;
+                box-sizing: border-box;
+                padding: 30rpx 20rpx 30rpx 20rpx;
+                background-color: #f9fbff;
+                border-radius: 30rpx;
+                margin-top: 15rpx;
+                box-shadow: 0 0 30rpx #e2ecff inset;
+                overflow: hidden;
+                .text {
+                    width: 100%;
+                    height: 100%;
+                    font-size: 18rpx;
+                    line-height: 30rpx;
+                    color: #95b6f9;
+                    text-decoration: underline;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
+    .btn-add {
+        position: fixed;
+        width: 160rpx;
+        height: 160rpx;
+        left: 50%;
+        bottom: 40rpx;
+        margin-left: -50rpx;
+        background: #d8d4de;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 80rpx;
+        border-radius: 50%;
+        border: 1rpx solid #cdccd1;
+    }
+}
+
+.page-note {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+    background: $linear-gradient;
+    overflow: hidden;
+    .letter-wrap {
+        width: 90%;
+        margin-left: 5%;
+        margin-top: 100px;
+        height: calc(100% - (100px + 80px));
+        overflow: hidden;
+        background-color: #fff;
+        position: relative;
+        box-shadow: 0 10rpx 20rpx #6123b8;
+        box-sizing: border-box;
+        padding: 40px 20px;
+        &:after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            left: 0;
+            top: 0;
+            background: url(http://r.photo.store.qq.com/psc?/V11a0HBd3wL3cs/BmgsQzVq*GNja8O.UNZvUZcfK8mPmZ2sDjFnQTz1pQAUu6UvL2JOrDXAekPD3AvhMcCebehP8YNplUhqG3A62GnJmbqCKZUd1HnfnzgGusA!/r)
+                center top repeat-x;
+            background-size: auto 10px;
+        }
+        &:before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            left: 0;
+            bottom: 0;
+            background: url(http://r.photo.store.qq.com/psc?/V11a0HBd3wL3cs/BmgsQzVq*GNja8O.UNZvUdJ0b*q3jxQqmw0oZy6i19GIIFojUVXhe4pU0ZNitObYpBNV2RBW1hldQbSfKQmA9m.P3ompYY6t81z9J1b7NdY!/r)
+                center bottom repeat-x;
+            background-size: auto 8px;
+        }
+        .content {
+            width: 100%;
+            height: 70%;
+            box-shadow: 0 10rpx 20rpx #ddd;
+            padding: 40rpx;
+            box-sizing: border-box;
+            position: relative;
+            text {
+                border-bottom: 1rpx dashed #ddd;
+                padding-bottom: 5rpx;
+            }
+            .ico-uhi {
+                width: 90rpx;
+                position: absolute;
+                right: -20rpx;
+                top: -30rpx;
+            }
+            .ico-tag {
+                width: 150rpx;
+                position: absolute;
+                left: -30rpx;
+                top: -30rpx;
+            }
+            // background: url(http://r.photo.store.qq.com/psc?/V11a0HBd3wL3cs/BmgsQzVq*GNja8O.UNZvUQ0uzlDpWb0agjIFSy0OPRcr5mYq.feknV8*KLCyd4DD1ETYBoxveKCpnqJRjawhV9*5YRJWiXZ.OLArOmRmjGQ!/r) repeat;
+        }
+        textarea {
+            font-size: 16px;
+            color: #333;
+            line-height: 28px;
+            width: 100%;
+            height: 100%;
+        }
+        .author {
+            margin-top: 30rpx;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #999;
+            font-size: 24rpx;
+            view:last-child {
+                text-align: right;
+            }
+            .location {
+                width: 60%;
+                display: flex;
+                align-items: center;
+                color: $main-color;
+            }
+        }
+        .images {
+            width: 100%;
+            margin-top: 40rpx;
+            image {
+                width: auto;
+                height: 100%;
+                width: 25%;
+                height: auto;
+            }
+        }
+    }
+    .btns {
+        display: flex;
+        width: 90%;
+        height: 80px;
+        margin-left: 5%;
+        justify-content: center;
+        align-items: center;
+        button {
+            min-width: 180rpx;
+        }
+    }
+}
+
+.page-child {
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10%;
+        .baby-head {
+            width: 240rpx;
+            height: 240rpx;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fbfffe;
+            image {
+                border-radius: 50%;
+                height: 220rpx;
+                width: 220rpx;
+            }
+        }
+        .gender {
+            margin-top: 40rpx;
+            margin-bottom: 60rpx;
+            display: flex;
+            view {
+                padding: 0 30rpx;
+                height: 60rpx;
+                border-radius: 50rpx;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 4rpx solid #000;
+                margin: 0 10rpx;
+                &.active:before {
+                    font: normal normal normal 14px/1 "vant-icon";
+                    content: "\F0C8";
+                    margin-right: 10rpx;
+                }
+                &:first-child {
+                    border-color: #1668cc;
+                    color: #1668cc;
+                    &.active {
+                        background-color: #1668cc;
+                        color: #fff;
+                    }
+                }
+                &:last-child {
+                    border-color: #cc166c;
+                    color: #cc166c;
+                    &.active {
+                        background-color: #cc166c;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+        input {
+            margin: 40rpx auto 0 auto;
+            border-bottom: 1rpx solid #ddd;
+            font-size: 50rpx;
+            height: 100rpx;
+            color: #000;
+            width: 60%;
+            text-align: center;
+            font-weight: bold;
+        }
+        picker {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+        .placeholder{
+            color: #999;
+            font-weight: 400;
+        }
+    }
+    .btns{
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 100rpx;
+        display: flex;
+        justify-content: center;
+        z-index: 100000;
+        button{
+            border-radius: 100rpx;
+            margin: 0 20rpx;
+            height: 110rpx;
+            font-size: 60rpx;
+            &.van-button--default{
+                width: 140rpx;
+            }
+            &.van-button--primary{
+                background: $linear-gradient;
+                width: 240rpx;
+                border: 0;
+            }
+        }
+    }
+}
+
+// 动画
+@keyframes twinkling {
+    0% {
+        transform: scale(0.9);
+    }
+    50% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0.9);
+    }
+}

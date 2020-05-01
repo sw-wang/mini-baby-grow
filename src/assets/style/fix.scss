@@ -1,0 +1,19 @@
+.van-nav-bar--fixed {
+    transition: all 0.5s;
+    z-index: 5!important;
+    background-color: rgba(255,255,255,0)!important;
+    .van-nav-bar__title{
+        color: #fff;
+        transition: all 0.5s;
+    }
+}
+.navigation--custom-tabbar{
+    background-color: rgba(129,62,221,.9)!important;
+    .van-nav-bar__title{
+        color: #fff;
+    }
+}
+
+.van-icon-arrow-left {
+    color: #fff!important;
+}

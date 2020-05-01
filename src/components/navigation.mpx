@@ -1,0 +1,51 @@
+<template>
+    <van-nav-bar
+        title="{{navBarTitle}}"
+        left-text="{{isBack?leftText:''}}"
+        fixed
+        left-arrow="{{isBack?true:false}}"
+        bind:click-left="onClickLeft"
+        custom-class="{{custom?'custom-tabbar':''}}"
+        border="{{false}}"
+    />
+</template>
+
+<script>
+import { createComponent } from '@mpxjs/core'
+
+createComponent({
+    properties: {
+        navBarTitle: {
+            type: String,
+            value: '标题',
+        },
+        leftText: {
+            type: String,
+            value: '　',
+        },
+        isBack: {
+            type: Boolean,
+            value: true
+        },
+        custom: {
+            type: Boolean,
+            value: false
+        }
+    },
+    methods: {
+        onClickLeft(){
+            wx.navigateBack()
+            // this.triggerEvent('maskHide')
+        }
+    }
+})
+</script>
+
+<script type="application/json">
+  {
+    "component": true,
+    "usingComponents": {
+        "van-nav-bar": "@vant/weapp/dist/nav-bar/index"
+    }
+  }
+</script>
