@@ -1,6 +1,6 @@
 # mini-baby-grow
 
-> A mpx project
+> 基于Mpx和vant开发的微信小程序应用，使用微信云开发作为服务端
 
 ## Dev
 

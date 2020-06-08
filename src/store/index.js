@@ -2,14 +2,14 @@ import { createStore } from '@mpxjs/core'
 
 const store = createStore({
     state: {
-        babyId: ''
+        child: {}
     },
     getters: {
-        getbBbyId: state => state.babyId
+        getChild: state => state.child
     },
     mutations: {
-        setbBbyId(state, value) {
-            state.babyId = value
+        setChild(state, value) {
+            state.child = value
         }
     }
 })

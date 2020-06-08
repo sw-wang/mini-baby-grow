@@ -1,5 +1,5 @@
 <template>
-    <view class="login-container" wx:if="{{show}}">
+    <view class="login-container" wx:if="{{ show }}">
         <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
     </view>
 </template>
@@ -24,7 +24,7 @@
                         // 检测是否授权
                         if (res.authSetting['scope.userInfo']) {
                             wx.getUserInfo({
-                                success: function (res) {
+                                success: function(res) {
                                     $this.http.call('updateUser', res.userInfo).then(res => {
                                         self.show = false
                                         self.triggerEvent('loginSuccess')
@@ -50,9 +50,9 @@
 </script>
 
 <script type="application/json">
-  {
-    "component": true
-  }
+    {
+        "component": true
+    }
 </script>
 
 <style lang="scss">

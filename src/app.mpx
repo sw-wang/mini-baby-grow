@@ -1,52 +1,53 @@
 <script>
-  import mpx from '@mpxjs/core'
-  import apiProxy from '@mpxjs/api-proxy'
-  import { loading, toast, dialog } from './utils/tools'
-  import './utils/prototype'
-  // import { http, api } from './utils/http'    // http serve
-  import http from './utils/cloud-http'    // wx cloud serve
+import mpx from '@mpxjs/core'
+import apiProxy from '@mpxjs/api-proxy'
+import { loading, toast, dialog } from './utils/tools'
+import './utils/prototype'
+import store from './store/index'
+// import { http, api } from './utils/http'    // http serve
+import http from './utils/cloud-http' // wx cloud serve
 
-  mpx.use(apiProxy, { usePromise: true })
-  // app.js
-  App({
+mpx.use(apiProxy, { usePromise: true })
+// app.js
+App({
     onLaunch() {
-      console.log(process.env.NODE_ENV)   // 环境变量
-      wx.cloud.init({
-        env: 'study-85dvo'
-      })
+        console.log(process.env.NODE_ENV) // 环境变量
+        wx.cloud.init({
+            env: 'study-85dvo'
+        })
     },
     // 挂载常用组件
-    loading, toast, dialog, http
-  })
+    loading,
+    toast,
+    dialog,
+    http,
+    store
+})
 </script>
 
 <script type="application/json">
-  {
-    "pages": [
-      "./pages/index",
-      "./pages/child",
-      "./pages/note"
-    ],
+{
+    "pages": ["./pages/index", "./pages/body", "./pages/milestone", "./pages/child", "./pages/note"],
     "window": {
-      "navigationStyle": "custom",
-      "navigationBarTextStyle": "black"
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "black"
     },
     "permission": {
-      "scope.userLocation": {
-        "desc": "您的位置信息将用于小程序位置接口的效果展示"
-      }
+        "scope.userLocation": {
+            "desc": "您的位置信息将用于小程序位置接口的效果展示"
+        }
     },
     "usingComponents": {
-      "van-toast": "@vant/weapp/dist/toast/index",
-      "van-dialog": "@vant/weapp/dist/dialog/index",
-      "van-icon": "@vant/weapp/dist/icon/index",
-      "nav-bar": "./components/navigation",
-      "van-button": "@vant/weapp/dist/button/index",
-      "image-cropper": "./components/image-cropper/image-cropper"
+        "van-toast": "@vant/weapp/dist/toast/index",
+        "van-dialog": "@vant/weapp/dist/dialog/index",
+        "van-icon": "@vant/weapp/dist/icon/index",
+        "nav-bar": "./components/navigation",
+        "van-button": "@vant/weapp/dist/button/index",
+        "image-cropper": "./components/image-cropper/image-cropper"
     }
-  }
+}
 </script>
 
 <style lang="scss">
-  @import "assets/style/main.scss";
+@import 'assets/style/main.scss';
 </style>

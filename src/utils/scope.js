@@ -8,7 +8,7 @@
 // scope.record	wx.startRecord	录音功能
 // scope.writePhotosAlbum	wx.saveImageToPhotosAlbum, wx.saveVideoToPhotosAlbum	保存到相册
 // scope.camera	camera 组件	摄像头
-export default (scope) => {
+export default scope => {
     return new Promise((resolve, reject) => {
         wx.getSetting({
             success(res) {

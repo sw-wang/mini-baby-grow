@@ -1,19 +1,17 @@
 import store from '../store/user'
-import Config from "../config";
+import Config from '../config'
 
 class Token {
-
     static requestToken(url, data) {
         return new Promise((resolve, reject) => {
             wx.request({
                 url: Config.apiUrl + url,
                 data: data,
-                method: "POST",
+                method: 'POST',
                 success: res => {
                     resolve(res.data)
                 },
-                fail: e => {
-                }
+                fail: e => {}
             })
         })
     }
@@ -28,7 +26,7 @@ class Token {
                         wxParams.encryptedData = result.encryptedData
                         wxParams.iv = result.iv
                         wxParams.userInfo = result.userInfo
-                        store.dispatch('modifyUserInfo', result.userInfo);
+                        store.dispatch('modifyUserInfo', result.userInfo)
                         this.requestToken('/plan/login/miniAppsLogin', wxParams).then(res => {
                             resolve(res)
                         })
@@ -50,24 +48,27 @@ class Token {
                             }
                         })
                     } else {
-                        getCurrentPages()[getCurrentPages().length - 1].selectComponent('#loginDialog').open().then(result => {
-                            resolve(result)
-                        })
+                        getCurrentPages()
+                            [getCurrentPages().length - 1].selectComponent('#loginDialog')
+                            .open()
+                            .then(result => {
+                                resolve(result)
+                            })
                     }
                 }
             })
-        });
+        })
     }
 
     static getToken() {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             if (store.getters.checkTokenExpire) {
                 this.refreshToken().then(res => {
                     const data = {
                         token: res.data.member_id,
                         expire_time: -1
                     }
-                    store.dispatch('modifyLoginInfo', data);
+                    store.dispatch('modifyLoginInfo', data)
                     resolve(data.token)
                 })
             } else {

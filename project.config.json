@@ -20,14 +20,61 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		}
+		},
+		"useCompilerModule": true,
+		"userConfirmedUseCompilerModuleSwitch": false
 	},
 	"appid": "wx1b575e1137bfe73a",
 	"projectname": "mini-baby-grow",
 	"description": "A mpx project",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
-	"libVersion": "2.10.4",
+	"libVersion": "2.11.1",
 	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
-	"condition": {}
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": [
+				{
+					"id": -1,
+					"name": "pages/milestone",
+					"pathName": "pages/milestone",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/index",
+					"pathName": "pages/index",
+					"query": "child=342few234323f",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/note",
+					"pathName": "pages/note",
+					"scene": null
+				}
+			]
+		}
+	}
 }

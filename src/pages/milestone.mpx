@@ -1,0 +1,143 @@
+<template>
+    <view class="page page-child">
+        <nav-bar isBack="{{true}}" navBarTitle="里程碑" custom />
+        <van-tabs active="{{ active }}" >
+            <van-tab title="里程碑">
+                <van-grid square clickable use-slot column-num="3" class="milestone-grid">
+                    <van-grid-item
+                        wx:for="{{ milestoneTypeList }}"
+                        wx:key="_id"
+                        bindtap="done(item)"
+                        class="iconfont {{ item.isCheck ? 'active' : '' }} {{ item.icon }}"
+                        text="{{ item.name }}"
+                    />
+                </van-grid>
+            </van-tab>
+            <van-tab title="时间线">
+                <view class="line-wrap">
+                    <van-steps
+                        direction="vertical"
+                        active-color="#813edd"
+                        active="{{ steps.length }}"
+                        steps="{{ steps }}"
+                    />
+                </view>
+            </van-tab>
+        </van-tabs>
+        <van-toast id="van-toast" />
+        <van-dialog
+            use-slot
+            title="完成{{currType.name}}"
+            show="{{ showMilestone }}"
+            show-cancel-button
+            confirm-button-text="完成里程碑"
+            bind:close="close"
+            bind:confirm="doneMile"
+        >
+            <view class="done-dialog">
+                <picker
+                    mode="date"
+                    value="{{currType.doneDate || currDate}}"
+                    end="{{currDate}}"
+                    bindchange="bindTimeChange"
+                >
+                    <input wx:model="{{currType.doneDate}}" type="text" placeholder="请选择完成日期" disabled />
+                </picker>
+                <input wx:model="{{currType.remark}}" type="text" placeholder="备注信息" />
+            </view>
+        </van-dialog>
+    </view>
+</template>
+
+<script>
+const $this = getApp()
+import { defaultHeadUrl } from '../constant'
+import { createPage } from '@mpxjs/core'
+import scope from '../utils/scope'
+createPage({
+    data: {
+        showMilestone: false,
+        child: {},
+        active: 0,
+        milestoneTypeList: [],
+        currDate: new Date().format('yyyy-MM-dd'),
+        currType: {},
+        steps: []
+    },
+
+    onLoad() {
+        this.init()
+        this.child = $this.store.getters.getChild
+    },
+    methods: {
+        bindTimeChange(e) {
+            this.currType.doneDate = e.detail.value
+            this.$forceUpdate()
+        },
+        close(e) {
+            this.showMilestone = false
+        },
+        done(item) {
+            this.currType = item
+            this.showMilestone = true
+        },
+        async init() {
+            $this.loading.open()
+            const milestoneTypeList = await $this.http.call('milestoneTypeList')
+            const milestoneInfo = await $this.http.call('milestoneInfo', { child: this.child._id })
+            $this.loading.close()
+            let steps = []
+            this.milestoneTypeList = milestoneTypeList.data.data
+            this.milestoneTypeList.forEach(item => {
+                milestoneInfo.data.data.forEach(ite => {
+                    if (item._id === ite.type) {
+                        item.isCheck = true
+                        item.remark = ite.remark || ''
+                        item.doneDate = ite.doneDate || ''
+                        item.eid = ite._id || ''
+                        steps.push(item)
+                    }
+                })
+            })
+            this.steps = steps.map(item => {
+                return {
+                    text: item.name,
+                    desc: `${item.doneDate} - ${item.remark}`
+                }
+            })
+        },
+        async doneMile() {
+            const data = {
+                type: this.currType._id,
+                doneDate: this.currType.doneDate || '',
+                remark: this.currType.remark || '',
+                child: this.child._id,
+                _id: this.currType.eid || null
+            }
+            if (!data.doneDate) {
+                $this.toast('fail', '请选择完成日期')
+                return
+            }
+            $this.loading.open()
+            await $this.http.call('milestoneDone', data)
+            $this.loading.close()
+            this.init()
+        }
+    }
+})
+// "enablePullDownRefresh": true
+</script>
+
+<script type="application/json">
+{
+    "usingComponents": {
+        "van-uploader": "@vant/weapp/dist/uploader/index",
+        "van-icon": "@vant/weapp/dist/icon/index",
+        "van-tab": "@vant/weapp/dist/tab/index",
+        "van-tabs": "@vant/weapp/dist/tabs/index",
+        "van-grid": "@vant/weapp/dist/grid/index",
+        "van-grid-item": "@vant/weapp/dist/grid-item/index",
+        "van-steps": "@vant/weapp/dist/steps/index"
+    }
+}
+</script>

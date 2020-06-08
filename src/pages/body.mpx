@@ -1,0 +1,123 @@
+<template>
+    <view class="page page-body">
+        <nav-bar isBack="{{true}}" navBarTitle="身高体重" custom />
+        <van-steps direction="vertical" active-color="#813edd" active="{{ 0 }}" steps="{{ steps }}" />
+        <van-toast id="van-toast" />
+
+        <view class="btn-view">
+            <button class="iconfont iconshengao" bindtap="showDia('height')"></button>
+            <button class="iconfont icontizhong" bindtap="showDia('width')"></button>
+         </view>
+
+         <van-dialog
+            use-slot
+            title="记录{{ form.type === 'height' ? '身高' : '体重' }}"
+            show="{{ showBody }}"
+            show-cancel-button
+            confirm-button-text="保存"
+            bind:close="close"
+            bind:confirm="save"
+        >
+            <view class="done-dialog">
+                <picker
+                    mode="date"
+                    value="{{form.date || currDate}}"
+                    end="{{currDate}}"
+                    bindchange="bindTimeChange"
+                >
+                    <input wx:model="{{form.date}}" type="text" placeholder="请选择日期" disabled />
+                </picker>
+                <input wx:model="{{form.value}}" type="digit" placeholder="{{ form.type === 'height' ? 'CM' : 'kg' }}" />
+                <input wx:model="{{form.remark}}" type="text" placeholder="备注信息" />
+            </view>
+        </van-dialog>
+    </view>
+</template>
+
+<script>
+const $this = getApp()
+import { defaultHeadUrl } from '../constant'
+import { createPage } from '@mpxjs/core'
+import scope from '../utils/scope'
+createPage({
+    data: {
+        showBody: false,
+        child: {},
+        active: 0,
+        currDate: new Date().format('yyyy-MM-dd'),
+        form: {},
+        steps: []
+    },
+
+    onLoad() {
+        this.child = $this.store.getters.getChild
+        this.init()
+    },
+    methods: {
+        showDia(val){
+            this.form.type = val
+            this.showBody = true
+        },
+        bindTimeChange(e) {
+            console.log(e.detail.value)
+            this.form.date = e.detail.value
+            console.log(this.form.date)
+            this.$forceUpdate()
+        },
+        close(e) {
+            this.showBody = false
+        },
+        async init() {
+            $this.loading.open()
+            const bodyInfo = await $this.http.call('bodyInfo', { child: this.child._id })
+            $this.loading.close()
+            this.steps = []
+            this.steps = bodyInfo.data.data.map(item => {
+                return {
+                    text: `${item.date}，${item.type === 'height' ? '身高' : '体重'}${item.value}${item.type === 'height' ? 'CM' : 'KG'}`,
+                    desc: `${item.remark}`
+                }
+            })
+        },
+        async save() {
+            const data = {
+                remark: this.form.remark || '',
+                child: this.child._id,
+                type: this.form.type,
+                date: this.form.date,
+                value: this.form.value,
+                _id: this.form.eid || null
+            }
+            if (!data.date) {
+                $this.toast('fail', '请选择日期')
+                return
+            }
+            if (!data.value) {
+                $this.toast('fail', '请填写数值')
+                return
+            }
+            $this.loading.open()
+            await $this.http.call('bodySave', data)
+            $this.loading.close()
+            this.init()
+        }
+    }
+})
+// "enablePullDownRefresh": true
+</script>
+
+<script type="application/json">
+{
+    "usingComponents": {
+        "van-uploader": "@vant/weapp/dist/uploader/index",
+        "van-icon": "@vant/weapp/dist/icon/index",
+        "van-tab": "@vant/weapp/dist/tab/index",
+        "van-tabs": "@vant/weapp/dist/tabs/index",
+        "van-grid": "@vant/weapp/dist/grid/index",
+        "van-grid-item": "@vant/weapp/dist/grid-item/index",
+        "van-steps": "@vant/weapp/dist/steps/index",
+        "van-slider": "@vant/weapp/dist/slider/index",
+        "van-steps": "@vant/weapp/dist/steps/index"
+    }
+}
+</script>

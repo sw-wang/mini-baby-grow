@@ -3,6 +3,7 @@
         title="{{navBarTitle}}"
         left-text="{{isBack?leftText:''}}"
         fixed
+        placeholder="{{placeholder}}"
         left-arrow="{{isBack?true:false}}"
         bind:click-left="onClickLeft"
         custom-class="{{custom?'custom-tabbar':''}}"
@@ -30,6 +31,10 @@ createComponent({
         custom: {
             type: Boolean,
             value: false
+        },
+        placeholder: {
+            type: Boolean,
+            value: true
         }
     },
     methods: {

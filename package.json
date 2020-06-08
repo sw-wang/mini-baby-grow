@@ -1,7 +1,7 @@
 {
   "name": "mini-baby-grow",
   "version": "1.0.0",
-  "description": "A mpx project",
+  "description": "基于Mpx和vant开发的微信小程序应用，使用微信云开发作为服务端",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

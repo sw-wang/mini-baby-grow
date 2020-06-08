@@ -23,7 +23,7 @@ const toast = (type, message, duration) => {
         type = 'text'
     }
     duration = duration || 2000
-    return new Promise((res) => {
+    return new Promise(res => {
         Toast({
             type,
             message,
@@ -36,18 +36,24 @@ const toast = (type, message, duration) => {
 }
 // 弹框强提示 dialog.alert||confirm('标题', '信息', {其他参数}).确定回调.取消回调
 const dialog = {
-    'alert': (title, message, opt = {}) => {
-        let _opt = Object.assign(opt, {title, message})
-        return new Promise((res) => {
+    alert: (title, message, opt = {}) => {
+        let _opt = Object.assign(opt, { title, message })
+        return new Promise(res => {
             Dialog.alert(_opt).then(() => {
-                res({type: 'alert', statu: 'ok'})
-            });
+                res({ type: 'alert', statu: 'ok' })
+            })
         })
     },
-    'confirm': (title, message, opt = {}) => {
-        let _opt = Object.assign(opt, {title, message})
+    confirm: (title, message, opt = {}) => {
+        let _opt = Object.assign(opt, { title, message })
         return new Promise((res, rej) => {
-            Dialog.confirm(_opt).then(() => { res() }).catch(() => { rej() });
+            Dialog.confirm(_opt)
+                .then(() => {
+                    res()
+                })
+                .catch(() => {
+                    rej()
+                })
         })
     }
 }

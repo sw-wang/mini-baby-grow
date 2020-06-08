@@ -1,23 +1,32 @@
 <template>
     <view class="page page-child">
         <nav-bar isBack="{{true}}" navBarTitle="宝宝" custom></nav-bar>
-        <view class='main-container'>
-            <image-cropper wx:if="{{uploadImgUrl}}" id="image-cropper" limit_move="{{true}}" disable_rotate="{{true}}"
-                disable_ratio="{{true}}" imgSrc="{{uploadImgUrl}}" bindimageload="loadimage" bindtapcut="clickcut">
+        <view class="main-container">
+            <image-cropper
+                wx:if="{{uploadImgUrl}}"
+                id="image-cropper"
+                limit_move="{{true}}"
+                disable_rotate="{{true}}"
+                disable_ratio="{{true}}"
+                imgSrc="{{uploadImgUrl}}"
+                bindimageload="loadimage"
+                bindtapcut="clickcut"
+            >
             </image-cropper>
             <view class="baby-head" bindtap="uploadImg">
-                <image src="{{form.headUrl}}" />
+                <image src="{{form && form.headUrl}}" />
             </view>
-            <view class='gender'>
-                <view class="{{form.gender === 1 ? 'active' : ''}}" bindtap="selGender(1)">男宝</view>
-                <view class="{{form.gender === 0 ? 'active' : ''}}" bindtap="selGender(0)">女宝</view>
+            <view class="gender">
+                <view class="{{form && form.gender === 1 ? 'active' : ''}}" bindtap="selGender(1)">男宝</view>
+                <view class="{{form && form.gender === 0 ? 'active' : ''}}" bindtap="selGender(0)">女宝</view>
             </view>
             <input placeholder-class="placeholder" wx:model="{{form.name}}" placeholder="宝宝可爱小名" />
             <picker mode="date" value="{{form.birthday}}" end="{{endDate}}" bindchange="bindDateChange">
                 <input disabled placeholder-class="placeholder" value="{{form.birthday}}" placeholder="宝宝出生日期" />
             </picker>
+            <van-button color="linear-gradient(to right, #4bb0ff, #6149f6)" wx:if="{{ form && form._id }}" block class="share" type="default" open-type="share" style="width: 30%; margin-top: 40rpx;">邀请亲友</van-button>
         </view>
-        <view class='btns'>
+        <view class="btns">
             <van-button type="default" bindtap="cancel">
                 <van-icon name="cross" />
             </van-button>
@@ -31,111 +40,123 @@
 </template>
 
 <script>
-    const $this = getApp()
-    import { defaultHeadUrl } from '../constant'
-    import { createPage } from '@mpxjs/core'
-    import scope from '../utils/scope'
-    import md5 from 'md5'
-    createPage({
-        data: {
-            cropper: null,
-            uploadImgUrl: '',
-            endDate: new Date().format('yyyy-MM-dd'),
-            isChangeHead: false,
-            form: {
+const $this = getApp()
+import { defaultHeadUrl } from '../constant'
+import { createPage } from '@mpxjs/core'
+import scope from '../utils/scope'
+import md5 from 'md5'
+createPage({
+    data: {
+        cropper: null,
+        uploadImgUrl: '',
+        endDate: new Date().format('yyyy-MM-dd'),
+        isChangeHead: false,
+        form: {}
+    },
+
+    onLoad() {
+        this.init()
+    },
+    onShareAppMessage() {
+        const token = ''
+        return {
+            title: `邀请你加入${this.form.name}的成长屋`,
+            path: `pages/index?child=${this.form._id}&token=${token}`,
+            imageUrl: this.form.headUrl
+        }
+    },
+    methods: {
+        init() {
+            this.form = $this.store.getters.getChild || {
                 gender: 1,
                 name: '',
                 birthday: '',
                 headUrl: defaultHeadUrl
             }
+            this.isChangeHead = false
+            // $this.loading.open()
+            // $this.http.call('childInfo').then(res => {
+            //     $this.loading.close()
+            //     if (res.code === 200) {
+            //         this.form = res.data[0]
+            //         this.isChangeHead = false
+            //     }
+            // })
         },
-
-        onLoad() {
-            this.init()
+        cancel() {
+            if (this.uploadImgUrl) {
+                this.uploadImgUrl = ''
+            } else {
+                wx.navigateBack()
+            }
         },
-        methods: {
-            init() {
-                $this.loading.open()
-                $this.http.call('childInfo').then(res => {
-                    $this.loading.close()
-                    if (res.code === 200) {
-                        this.form = res.data[0]
-                        this.isChangeHead = false
-                    }
-                })
-            },
-            cancel() {
-                if (this.uploadImgUrl) {
+        async save() {
+            if (this.uploadImgUrl) {
+                this.cropper.getImg(res => {
+                    this.form.headUrl = res.url
+                    this.isChangeHead = true
                     this.uploadImgUrl = ''
-                } else {
-                    wx.navigateBack()
-                }
-            },
-            async save() {
-                if (this.uploadImgUrl) {
-                    this.cropper.getImg((res) => {
-                        this.form.headUrl = res.url
-                        this.isChangeHead = true
-                        this.uploadImgUrl = ''
-                    })
-                } else {
-                    let { form } = this
-                    $this.loading.open()
-                    if (this.isChangeHead) {
-                        const fileId = await $this.http.upload(`note_images/${md5(form.headUrl)}${form.headUrl.match(/\.[^.]+?$/)[0]}`, form.headUrl)
-                        form.headUrl = fileId
-                    }
-                    $this.http.call('childSave', form).then(res => {
-                        $this.loading.close()
-                        $this.toast('成功！')
-                        setTimeout(() => {
-                            this.init()
-                        }, 2000)
-                    })
-                }
-            },
-            inputChange(name, e) {
-                console.log(name, e)
-                // this.form[name] = 
-            },
-            uploadImg() {
-                let self = this
-                wx.chooseImage({
-                    count: 1,
-                    success(res) {
-                        self.uploadImgUrl = res.tempFilePaths[0]
-                        setTimeout(() => {
-                            self.cropper = self.selectComponent("#image-cropper")
-                        }, 100)
-
-                    }
                 })
-            },
-            selGender(t) {
-                this.form.gender = t || 0
-            },
-            bindDateChange(e) {
-                this.form.birthday = e.detail.value
-            },
-            loadimage(e) {
-                wx.hideLoading()
-            },
-            clickcut(e) {
-                wx.previewImage({
-                    current: e.detail.url, // 当前显示图片的http链接
-                    urls: [e.detail.url] // 需要预览的图片http链接列表
+            } else {
+                let { form } = this
+                $this.loading.open()
+                if (this.isChangeHead) {
+                    const fileId = await $this.http.upload(
+                        `note_images/${md5(form.headUrl)}${form.headUrl.match(/\.[^.]+?$/)[0]}`,
+                        form.headUrl
+                    )
+                    form.headUrl = fileId
+                }
+                $this.http.call('childSave', form).then(res => {
+                    $this.loading.close()
+                    $this.toast('成功！')
+                    setTimeout(() => {
+                        // this.init()
+                    }, 2000)
                 })
             }
+        },
+        inputChange(name, e) {
+            console.log(name, e)
+            // this.form[name] =
+        },
+        uploadImg() {
+            let self = this
+            wx.chooseImage({
+                count: 1,
+                success(res) {
+                    self.uploadImgUrl = res.tempFilePaths[0]
+                    setTimeout(() => {
+                        self.cropper = self.selectComponent('#image-cropper')
+                    }, 100)
+                }
+            })
+        },
+        selGender(t) {
+            this.form.gender = t || 0
+        },
+        bindDateChange(e) {
+            this.form.birthday = e.detail.value
+        },
+        loadimage(e) {
+            wx.hideLoading()
+        },
+        clickcut(e) {
+            wx.previewImage({
+                current: e.detail.url, // 当前显示图片的http链接
+                urls: [e.detail.url] // 需要预览的图片http链接列表
+            })
         }
-    })
+    }
+})
 // "enablePullDownRefresh": true
 </script>
 
 <script type="application/json">
-  {
+{
     "usingComponents": {
         "van-uploader": "@vant/weapp/dist/uploader/index",
         "van-icon": "@vant/weapp/dist/icon/index"
     }
-  }
+}
 </script>

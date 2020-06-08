@@ -20,7 +20,6 @@ exports.main = async (event, context) => {
         }
     }
     childs = childs.map(item => {
-        // const days = new Date().getTime() - new Date(item.birthday.replace(/-/g, "/")).getTime()
         item.days = fresh(item.birthday)
         return item
     })
